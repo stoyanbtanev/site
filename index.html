@@ -50,8 +50,6 @@ html {
   text-size-adjust: 100%;
   /* Smooth scroll only when the user hasn't asked for reduced motion */
   scroll-behavior: smooth;
-  overflow-x: hidden;
-  width: 100%;
 }
 
 body {
@@ -59,8 +57,7 @@ body {
   color: var(--fg);
   background: var(--bg);
   /* clip instead of hidden — doesn't create a new scroll container, safe on iOS */
-  overflow-x: hidden;
-  width: 100%;
+  overflow-x: clip;
   -webkit-font-smoothing: antialiased;
   /* pan-y = vertical scroll only, manipulation = no double-tap zoom anywhere on the page */
   touch-action: pan-y;
