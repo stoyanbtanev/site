@@ -1,0 +1,1243 @@
+<!DOCTYPE html>
+<html lang="bg">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+<title>Пекарни Сиана — Семейни пекарни</title>
+
+<link rel="icon" type="image/png" href="https://raw.githubusercontent.com/pekarnisiana/site/main/images/logo.png">
+<meta property="og:image" content="https://raw.githubusercontent.com/pekarnisiana/site/main/images/logo.png">
+<meta property="og:title" content="Пекарни Сиана — Семейни пекарни">
+<meta property="og:description" content="Семейни пекарни Сиана — Топли закуски, изпечени на място. Традиция и вкус във всяка хапка.">
+<meta property="og:type" content="website">
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:image" content="https://raw.githubusercontent.com/pekarnisiana/site/main/images/logo.png">
+
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,400;0,600;0,700;1,400&family=Nunito:wght@300;400;600;700&display=swap" rel="stylesheet">
+
+<style>
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+:root {
+  --gold: #C8961E;
+  --gold-light: #E8B84B;
+  --gold-dark: #8B6914;
+  --cream: #FDF8F0;
+  --warm-white: #FFFCF5;
+  --brown: #3D2B1F;
+  --brown-light: #5C4033;
+  --text: #2C1810;
+  --text-light: #6B5B4E;
+  --wheat: #F5E6C8;
+  --wheat-light: #FAF0DC;
+}
+
+html {
+  scroll-behavior: smooth;
+  /* Prevent horizontal overflow globally */
+  overflow-x: hidden;
+}
+
+body {
+  font-family: 'Nunito', sans-serif;
+  color: var(--text);
+  background: var(--warm-white);
+  overflow-x: hidden;
+  -webkit-font-smoothing: antialiased;
+  /* Prevent iOS bounce scroll from causing layout issues */
+  -webkit-overflow-scrolling: touch;
+  width: 100%;
+  max-width: 100vw;
+}
+
+/* ===== NAVIGATION ===== */
+nav {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  z-index: 1000;
+  padding: 1.1rem 2.5rem;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  transition: background-color 0.4s ease, padding 0.4s ease, box-shadow 0.4s ease;
+  background: transparent;
+  width: 100%;
+}
+
+nav.scrolled {
+  background: rgba(253, 248, 240, 0.98);
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
+  box-shadow: 0 2px 30px rgba(0,0,0,0.08);
+  padding: 0.7rem 2.5rem;
+}
+
+.nav-links {
+  display: flex;
+  gap: 2.5rem;
+  list-style: none;
+  align-items: center;
+  margin: 0;
+  padding: 0;
+}
+
+.nav-links a {
+  text-decoration: none;
+  color: var(--brown);
+  font-weight: 700;
+  font-size: 0.85rem;
+  letter-spacing: 1.5px;
+  text-transform: uppercase;
+  transition: color 0.3s;
+  text-shadow: none;
+  position: relative;
+  white-space: nowrap;
+}
+
+.nav-links a::after {
+  content: '';
+  position: absolute;
+  bottom: -4px;
+  left: 0;
+  width: 0;
+  height: 2px;
+  background: var(--gold);
+  transition: width 0.3s ease;
+}
+
+.nav-links a:hover::after { width: 100%; }
+.nav-links a:hover { color: var(--gold); }
+nav.scrolled .nav-links a { color: var(--brown); text-shadow: none; }
+nav.scrolled .nav-links a::after { background: var(--gold); }
+nav.scrolled .nav-links a:hover { color: var(--gold); }
+
+.nav-dot {
+  width: 4px;
+  height: 4px;
+  border-radius: 50%;
+  background: var(--brown);
+  opacity: 0.4;
+  flex-shrink: 0;
+}
+
+nav.scrolled .nav-dot { background: var(--gold); opacity: 0.35; }
+
+.hamburger {
+  display: none;
+  flex-direction: column;
+  gap: 6px;
+  cursor: pointer;
+  z-index: 1001;
+  padding: 10px;
+  touch-action: manipulation;
+  /* Prevent double-tap zoom on iOS */
+  -webkit-tap-highlight-color: transparent;
+}
+
+.hamburger span {
+  width: 26px;
+  height: 2px;
+  background: var(--brown);
+  transition: all 0.3s ease-in-out;
+  border-radius: 2px;
+  display: block;
+}
+
+.hamburger.active span:nth-child(1) { transform: rotate(45deg) translate(5px, 6px); }
+.hamburger.active span:nth-child(2) { opacity: 0; }
+.hamburger.active span:nth-child(3) { transform: rotate(-45deg) translate(5px, -6px); }
+
+/* ===== HERO ===== */
+.hero {
+  position: relative;
+  /* KEY FIX: Use 100dvh (dynamic viewport height) for modern browsers,
+     with fallback chain for older ones. This properly accounts for
+     mobile browser chrome (address bars) without jumping. */
+  height: 100vh;
+  height: 100dvh;
+  min-height: 500px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  text-align: center;
+  overflow: hidden;
+  background-color: var(--wheat);
+  /* Prevent hero from affecting page width */
+  width: 100%;
+  max-width: 100%;
+}
+
+.hero-bg {
+  position: absolute;
+  inset: 0;
+  overflow: hidden;
+}
+
+/* Using an <img> instead of background-image completely eliminates
+   the mobile zoom/scroll rendering bug. The image is pinned via
+   object-fit and never repaints on scroll. */
+.hero-bg img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  object-position: 50% 40%;
+  display: block;
+  transform: none;
+  will-change: auto;
+  pointer-events: none;
+  -webkit-user-select: none;
+  user-select: none;
+}
+
+/* Vignette Overlay */
+.hero::after {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background: radial-gradient(circle, transparent 45%, rgba(61,43,31,0.2) 100%);
+  pointer-events: none;
+  z-index: 1;
+}
+
+.hero-content { display: none; }
+
+/* ===== SECTION COMMONS ===== */
+section {
+  padding: 7rem 2rem;
+  width: 100%;
+  max-width: 100%;
+  overflow: hidden;
+}
+
+.section-label {
+  font-family: 'Nunito', sans-serif;
+  font-size: 0.75rem;
+  letter-spacing: 5px;
+  text-transform: uppercase;
+  color: var(--gold);
+  font-weight: 700;
+  text-align: center;
+  margin-bottom: 0.8rem;
+}
+
+.section-title {
+  font-family: 'Cormorant Garamond', serif;
+  font-size: clamp(2rem, 4vw, 3.2rem);
+  color: var(--brown);
+  text-align: center;
+  font-weight: 700;
+  line-height: 1.2;
+  margin-bottom: 1rem;
+}
+
+.section-divider {
+  width: 60px;
+  height: 3px;
+  background: linear-gradient(90deg, var(--gold), var(--gold-light));
+  margin: 0 auto 3.5rem;
+  border-radius: 2px;
+}
+
+/* ===== ABOUT ===== */
+#about {
+  background: var(--cream);
+  position: relative;
+  overflow: hidden;
+}
+
+#about::before {
+  content: '';
+  position: absolute;
+  top: -150px;
+  right: -150px;
+  width: 500px;
+  height: 500px;
+  background: radial-gradient(circle, rgba(200,150,30,0.05) 0%, transparent 70%);
+  border-radius: 50%;
+  pointer-events: none;
+}
+
+.about-grid {
+  max-width: 1100px;
+  margin: 0 auto;
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 5rem;
+  align-items: center;
+  position: relative;
+  z-index: 1;
+}
+
+.about-image {
+  position: relative;
+  border-radius: 20px;
+  overflow: hidden;
+  box-shadow: 0 25px 60px rgba(0,0,0,0.12);
+}
+
+.about-image img {
+  width: 100%;
+  height: 450px;
+  object-fit: cover;
+  display: block;
+  transition: transform 0.8s ease;
+}
+
+.about-image:hover img { transform: scale(1.05); }
+
+.about-image::after {
+  content: '';
+  position: absolute;
+  bottom: 0; left: 0; right: 0;
+  height: 40%;
+  background: linear-gradient(to top, rgba(61,43,31,0.2), transparent);
+  pointer-events: none;
+}
+
+.about-image::before {
+  content: '';
+  position: absolute;
+  top: -2px; left: -2px;
+  width: 80px; height: 80px;
+  border-top: 3px solid var(--gold);
+  border-left: 3px solid var(--gold);
+  border-radius: 20px 0 0 0;
+  z-index: 2;
+}
+
+.about-text h2 {
+  font-family: 'Cormorant Garamond', serif;
+  font-size: 2.6rem;
+  color: var(--brown);
+  margin-bottom: 1.5rem;
+  line-height: 1.15;
+}
+
+.about-text p {
+  font-size: 1.05rem;
+  line-height: 1.85;
+  color: var(--text-light);
+  margin-bottom: 1.2rem;
+}
+
+.about-features {
+  display: flex;
+  gap: 2rem;
+  margin-top: 2.5rem;
+}
+
+.about-feature { text-align: center; flex: 1; }
+
+.about-feature .af-icon {
+  width: 54px; height: 54px;
+  background: linear-gradient(135deg, var(--gold-light), var(--gold));
+  border-radius: 50%;
+  display: flex; align-items: center; justify-content: center;
+  margin: 0 auto 0.8rem;
+  color: white; font-size: 1.3rem;
+  box-shadow: 0 4px 15px rgba(200,150,30,0.3);
+}
+
+.about-feature h4 {
+  font-family: 'Cormorant Garamond', serif;
+  font-size: 1.15rem;
+  color: var(--brown);
+  margin-bottom: 0.3rem;
+  font-weight: 700;
+}
+
+.about-feature p { font-size: 0.85rem; color: var(--text-light); margin-bottom: 0; }
+
+/* ===== PRODUCTS GALLERY ===== */
+#products { background: var(--warm-white); }
+
+.products-grid {
+  max-width: 1200px;
+  margin: 0 auto;
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 1.2rem;
+}
+
+.product-card {
+  position: relative;
+  border-radius: 16px;
+  overflow: hidden;
+  cursor: pointer;
+  aspect-ratio: 1;
+}
+
+.product-card img {
+  width: 100%; height: 100%;
+  object-fit: cover;
+  transition: transform 0.7s ease;
+}
+
+.product-card:hover img { transform: scale(1.1); }
+
+.product-card .overlay {
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(to top, rgba(61,43,31,0.75) 0%, rgba(61,43,31,0.1) 40%, transparent 60%);
+  opacity: 0;
+  transition: opacity 0.4s ease;
+  display: flex;
+  align-items: flex-end;
+  padding: 1.5rem;
+}
+
+.product-card:hover .overlay { opacity: 1; }
+
+.product-card .overlay span {
+  color: white;
+  font-family: 'Cormorant Garamond', serif;
+  font-size: 1.3rem;
+  font-weight: 600;
+  transform: translateY(10px);
+  transition: transform 0.4s ease;
+}
+
+.product-card:hover .overlay span { transform: translateY(0); }
+
+.product-card.hero-card {
+  grid-column: span 2;
+  grid-row: span 2;
+  aspect-ratio: auto;
+}
+
+/* ===== LOCATIONS ===== */
+#locations { background: var(--cream); }
+
+.locations-grid {
+  max-width: 1250px;
+  margin: 0 auto;
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 2rem;
+}
+
+.location-card {
+  border-radius: 20px;
+  overflow: hidden;
+  background: white;
+  box-shadow: 0 10px 40px rgba(0,0,0,0.07);
+  transition: transform 0.5s ease, box-shadow 0.5s ease;
+  display: flex;
+  flex-direction: column;
+}
+
+.location-card:hover {
+  transform: translateY(-8px);
+  box-shadow: 0 25px 60px rgba(0,0,0,0.12);
+}
+
+.location-card img {
+  width: 100%;
+  height: 250px;
+  object-fit: cover;
+}
+
+.location-info { padding: 2rem; flex: 1; display: flex; flex-direction: column; }
+
+.location-info h3 {
+  font-family: 'Cormorant Garamond', serif;
+  font-size: 1.5rem;
+  color: var(--brown);
+  margin-bottom: 0.8rem;
+}
+
+.location-info p {
+  color: var(--text-light);
+  font-size: 0.95rem;
+  line-height: 1.7;
+  margin-bottom: 1rem;
+}
+
+.location-info .hours {
+  margin-top: auto;
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5rem;
+  padding: 0.5rem 1.2rem;
+  background: var(--wheat-light);
+  border-radius: 25px;
+  font-size: 0.85rem;
+  color: var(--gold-dark);
+  font-weight: 600;
+  align-self: flex-start;
+}
+
+/* ===== VALUES ===== */
+#values {
+  background: var(--brown);
+  color: white;
+  position: relative;
+  overflow: hidden;
+}
+
+#values::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background:
+    radial-gradient(ellipse at 20% 80%, rgba(200,150,30,0.1) 0%, transparent 50%),
+    radial-gradient(ellipse at 80% 20%, rgba(200,150,30,0.08) 0%, transparent 50%);
+  pointer-events: none;
+}
+
+#values .section-label { color: var(--gold-light); }
+#values .section-title { color: white; }
+
+.values-grid {
+  max-width: 1000px;
+  margin: 0 auto;
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 3rem;
+  position: relative;
+  z-index: 1;
+}
+
+.value-item {
+  text-align: center;
+  padding: 2.5rem 1.5rem;
+  border-radius: 16px;
+  transition: background 0.4s ease;
+}
+
+.value-item:hover { background: rgba(255,255,255,0.05); }
+
+.value-icon {
+  width: 72px; height: 72px;
+  border: 2px solid rgba(200,150,30,0.5);
+  border-radius: 50%;
+  display: flex; align-items: center; justify-content: center;
+  margin: 0 auto 1.5rem;
+  font-size: 1.8rem;
+  color: var(--gold-light);
+  transition: all 0.4s ease;
+}
+
+.value-item:hover .value-icon {
+  background: var(--gold);
+  border-color: var(--gold);
+  color: white;
+  transform: scale(1.05);
+}
+
+.value-item h3 {
+  font-family: 'Cormorant Garamond', serif;
+  font-size: 1.4rem;
+  margin-bottom: 0.8rem;
+  color: var(--wheat);
+}
+
+.value-item p { font-size: 0.92rem; line-height: 1.75; color: rgba(255,255,255,0.65); }
+
+/* ===== PARTNERS ===== */
+#partners { background: var(--warm-white); }
+
+.partners-container {
+  max-width: 850px;
+  margin: 0 auto;
+}
+
+.partners-intro {
+  text-align: center;
+  font-size: 1.05rem;
+  color: var(--text-light);
+  line-height: 1.8;
+  margin-bottom: 3rem;
+  max-width: 600px;
+  margin-left: auto;
+  margin-right: auto;
+}
+
+.partners-grid {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  gap: 2.5rem;
+  flex-wrap: wrap;
+}
+
+.partner-card {
+  flex: 0 1 auto;
+  width: 260px;
+  background: white;
+  border-radius: 20px;
+  padding: 2rem;
+  text-align: center;
+  box-shadow: 0 8px 35px rgba(0,0,0,0.06);
+  border: 1px solid rgba(200,150,30,0.1);
+  transition: all 0.4s ease;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+}
+
+.partner-card:hover {
+  transform: translateY(-5px);
+  box-shadow: 0 18px 50px rgba(0,0,0,0.1);
+  border-color: rgba(200,150,30,0.3);
+}
+
+.partner-logo-wrap {
+  width: 140px;
+  height: 120px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.partner-logo-wrap img {
+  max-width: 100%;
+  max-height: 100%;
+  object-fit: contain;
+}
+
+.partner-logo-link { display: block; text-decoration: none; }
+
+/* ===== CONTACT ===== */
+#contact { background: var(--cream); }
+
+.contact-content {
+  max-width: 800px;
+  margin: 0 auto;
+  text-align: center;
+}
+
+.contact-content > p {
+  font-size: 1.1rem;
+  color: var(--text-light);
+  line-height: 1.8;
+  margin-bottom: 2.5rem;
+}
+
+.contact-phone {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.8rem;
+  font-family: 'Cormorant Garamond', serif;
+  font-size: 2.6rem;
+  color: var(--gold-dark);
+  font-weight: 700;
+  text-decoration: none;
+  transition: color 0.3s;
+  margin-bottom: 2.5rem;
+}
+
+.contact-phone:hover { color: var(--gold); }
+
+.contact-details {
+  display: flex;
+  justify-content: center;
+  gap: 4rem;
+  flex-wrap: wrap;
+  margin-top: 2.5rem;
+}
+
+.contact-detail { text-align: center; }
+
+.contact-detail h4 {
+  font-family: 'Cormorant Garamond', serif;
+  font-size: 1.15rem;
+  color: var(--brown);
+  margin-bottom: 0.5rem;
+  font-weight: 700;
+}
+
+.contact-detail p { font-size: 0.92rem; color: var(--text-light); line-height: 1.6; }
+
+/* ===== PRICING SECTION ===== */
+#pricing {
+  background: var(--brown);
+  color: white;
+  position: relative;
+  overflow: hidden;
+  padding: 6rem 2rem;
+}
+
+#pricing::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background:
+    radial-gradient(ellipse at 10% 90%, rgba(200,150,30,0.12) 0%, transparent 50%),
+    radial-gradient(ellipse at 90% 10%, rgba(200,150,30,0.08) 0%, transparent 50%);
+  pointer-events: none;
+}
+
+#pricing .section-label { color: var(--gold-light); }
+#pricing .section-title { color: white; }
+#pricing .section-divider { background: linear-gradient(90deg, var(--gold-light), var(--gold)); }
+
+.pricing-grid {
+  max-width: 900px;
+  margin: 0 auto;
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 1.8rem;
+  position: relative;
+  z-index: 1;
+}
+
+.pricing-card {
+  background: rgba(255,255,255,0.06);
+  border: 1px solid rgba(200,150,30,0.25);
+  border-radius: 20px;
+  padding: 2.2rem 1.8rem;
+  text-align: center;
+  transition: all 0.4s ease;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 1.2rem;
+}
+
+.pricing-card:hover {
+  background: rgba(255,255,255,0.1);
+  border-color: rgba(200,150,30,0.5);
+  transform: translateY(-5px);
+  box-shadow: 0 20px 50px rgba(0,0,0,0.3);
+}
+
+.pricing-card-icon {
+  font-size: 2.2rem;
+  width: 64px;
+  height: 64px;
+  background: linear-gradient(135deg, var(--gold-light), var(--gold));
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  box-shadow: 0 6px 20px rgba(200,150,30,0.4);
+}
+
+.pricing-card h3 {
+  font-family: 'Cormorant Garamond', serif;
+  font-size: 1.35rem;
+  font-weight: 700;
+  color: var(--wheat);
+  line-height: 1.3;
+}
+
+.pricing-rows {
+  width: 100%;
+  display: flex;
+  flex-direction: column;
+  gap: 0.7rem;
+}
+
+.pricing-row {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 0.6rem 0.9rem;
+  background: rgba(255,255,255,0.05);
+  border-radius: 10px;
+  gap: 0.5rem;
+}
+
+.pricing-row-label {
+  font-size: 0.88rem;
+  color: rgba(255,255,255,0.7);
+  text-align: left;
+  flex: 1;
+}
+
+.pricing-row-price {
+  font-family: 'Cormorant Garamond', serif;
+  font-size: 1.1rem;
+  font-weight: 700;
+  color: var(--gold-light);
+  white-space: nowrap;
+}
+
+/* ===== FOOTER ===== */
+footer {
+  background: var(--brown);
+  color: rgba(255,255,255,0.6);
+  padding: 3.5rem 2rem;
+  text-align: center;
+  border-top: 1px solid rgba(200,150,30,0.2);
+}
+
+.footer-logo {
+  height: 65px;
+  width: auto;
+  margin-bottom: 1rem;
+  opacity: 0.9;
+  object-fit: contain;
+}
+
+footer p { font-size: 0.88rem; margin-bottom: 0.3rem; }
+
+footer .copyright {
+  margin-top: 1.5rem;
+  font-size: 0.78rem;
+  opacity: 0.4;
+}
+
+/* ===== ANIMATIONS ===== */
+.reveal {
+  opacity: 0;
+  transform: translateY(40px);
+  transition: opacity 0.8s ease, transform 0.8s ease;
+}
+
+.reveal.visible {
+  opacity: 1;
+  transform: translateY(0);
+}
+
+.reveal-delay-1 { transition-delay: 0.1s; }
+.reveal-delay-2 { transition-delay: 0.2s; }
+.reveal-delay-3 { transition-delay: 0.3s; }
+
+/* ===== RESPONSIVE — Tablet ===== */
+@media (max-width: 900px) {
+  nav { justify-content: flex-end; }
+
+  .hamburger { display: flex; }
+
+  /* Mobile Dropdown Menu */
+  .nav-links {
+    position: absolute;
+    top: 100%;
+    left: 0;
+    right: 0;
+    width: 100%;
+    background: rgba(253, 248, 240, 0.98);
+    backdrop-filter: blur(15px);
+    -webkit-backdrop-filter: blur(15px);
+    flex-direction: column;
+    align-items: center;
+    gap: 1.5rem;
+    padding: 2.5rem 0;
+    box-shadow: 0 15px 35px rgba(0,0,0,0.1);
+    opacity: 0;
+    transform: translateY(-20px);
+    pointer-events: none;
+    transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+    z-index: 999;
+  }
+
+  .nav-links.open {
+    opacity: 1;
+    transform: translateY(0);
+    pointer-events: all;
+  }
+
+  .nav-links a {
+    color: var(--brown) !important;
+    font-size: 1.1rem;
+    letter-spacing: 2px;
+    text-shadow: none;
+    opacity: 0;
+    transform: translateY(10px);
+    transition: opacity 0.4s ease, transform 0.4s ease, color 0.3s ease;
+  }
+
+  .nav-links.open a { opacity: 1; transform: translateY(0); }
+  .nav-links.open li:nth-child(1) a { transition-delay: 0.1s; }
+  .nav-links.open li:nth-child(3) a { transition-delay: 0.15s; }
+  .nav-links.open li:nth-child(5) a { transition-delay: 0.2s; }
+  .nav-links.open li:nth-child(7) a { transition-delay: 0.25s; }
+  .nav-links.open li:nth-child(9) a { transition-delay: 0.3s; }
+
+  .nav-dot { display: none; }
+
+  .about-grid { grid-template-columns: 1fr; gap: 2.5rem; }
+  .about-image::before { display: none; }
+
+  .products-grid { grid-template-columns: 1fr 1fr; }
+  .product-card.hero-card { grid-column: span 2; grid-row: span 1; aspect-ratio: 16/9; }
+
+  .locations-grid { grid-template-columns: 1fr; max-width: 550px; }
+  .values-grid { grid-template-columns: 1fr; gap: 1rem; max-width: 400px; }
+
+  .pricing-grid { grid-template-columns: 1fr; max-width: 420px; margin: 0 auto; }
+}
+
+/* ===== RESPONSIVE — Mobile ===== */
+@media (max-width: 600px) {
+  section { padding: 5rem 1.25rem; }
+
+  .products-grid { grid-template-columns: 1fr; }
+  .product-card.hero-card { grid-column: span 1; aspect-ratio: 4/3; }
+  .product-card { aspect-ratio: 4/3; }
+
+  .about-features { flex-direction: column; gap: 1.5rem; }
+  .about-image img { height: 300px; }
+  .about-text h2 { font-size: 2rem; }
+
+  .contact-phone { font-size: 1.8rem; }
+  .contact-details { gap: 2rem; }
+
+  .partners-grid { flex-direction: column; align-items: center; }
+  .partner-card { width: 100%; max-width: 100%; }
+
+  .pricing-grid { grid-template-columns: 1fr; max-width: 100%; }
+  .pricing-card { padding: 1.8rem 1.5rem; }
+
+  /* Fix hero on small screens */
+  .hero { min-height: 400px; }
+}
+
+/* ===== SAFE AREA INSETS (iPhone notch/home bar) ===== */
+@supports (padding-bottom: env(safe-area-inset-bottom)) {
+  footer { padding-bottom: calc(3.5rem + env(safe-area-inset-bottom)); }
+}
+</style>
+</head>
+<body>
+
+<!-- Navigation -->
+<nav id="navbar">
+  <ul class="nav-links" id="navLinks">
+    <li><a href="#about">За нас</a></li>
+    <li><span class="nav-dot"></span></li>
+    <li><a href="#products">Продукти</a></li>
+    <li><span class="nav-dot"></span></li>
+    <li><a href="#locations">Обекти</a></li>
+    <li><span class="nav-dot"></span></li>
+    <li><a href="#partners">Партньори</a></li>
+    <li><span class="nav-dot"></span></li>
+    <li><a href="#contact">Контакти</a></li>
+  </ul>
+  <div class="hamburger" id="hamburger">
+    <span></span><span></span><span></span>
+  </div>
+</nav>
+
+<!-- Hero -->
+<section class="hero">
+  <div class="hero-bg">
+    <img src="https://raw.githubusercontent.com/pekarnisiana/site/main/images/15.png" alt="" aria-hidden="true" fetchpriority="high">
+  </div>
+  <div class="hero-content"></div>
+</section>
+
+<!-- About -->
+<section id="about">
+  <div class="about-grid">
+    <div class="about-image reveal">
+      <img src="https://raw.githubusercontent.com/pekarnisiana/site/main/images/8.jpg" alt="Пекарна Сиана" loading="lazy">
+    </div>
+    <div class="about-text reveal reveal-delay-2">
+      <p class="section-label">За нас</p>
+      <h2>Пресни изкушения, изпечени с любов</h2>
+      <p>Нашата мисия е да създаваме удоволствие всеки ден, като предлагаме пресни, вкусни и топли продукти, приготвени с много грижа, любов и най-добрите съставки.</p>
+      <div class="about-features">
+        <div class="about-feature">
+          <div class="af-icon">🌾</div>
+          <h4>Качество</h4>
+          <p>Най-добрите съставки</p>
+        </div>
+        <div class="about-feature">
+          <div class="af-icon">❤️</div>
+          <h4>Любов</h4>
+          <p>Ръчна изработка</p>
+        </div>
+        <div class="about-feature">
+          <div class="af-icon">⏰</div>
+          <h4>Всеки ден</h4>
+          <p>Винаги пресни</p>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- Products Gallery -->
+<section id="products">
+  <p class="section-label">Нашите продукти</p>
+  <h2 class="section-title">Топли закуски, изпечени на място</h2>
+  <div class="section-divider"></div>
+  <div class="products-grid">
+    <div class="product-card hero-card reveal">
+      <img src="https://raw.githubusercontent.com/pekarnisiana/site/main/images/1.jpg" alt="Питки със сусам" loading="lazy">
+      <div class="overlay"><span>Питки със сусам</span></div>
+    </div>
+    <div class="product-card reveal reveal-delay-1">
+      <img src="https://raw.githubusercontent.com/pekarnisiana/site/main/images/2.jpg" alt="Бутер баници" loading="lazy">
+      <div class="overlay"><span>Бутер баници</span></div>
+    </div>
+    <div class="product-card reveal reveal-delay-2">
+      <img src="https://raw.githubusercontent.com/pekarnisiana/site/main/images/3.jpg" alt="Триъгълни баници" loading="lazy">
+      <div class="overlay"><span>Триъгълни баници</span></div>
+    </div>
+    <div class="product-card reveal reveal-delay-1">
+      <img src="https://raw.githubusercontent.com/pekarnisiana/site/main/images/4.jpg" alt="Мит с кренвирш" loading="lazy">
+      <div class="overlay"><span>Мит с кренвирш</span></div>
+    </div>
+    <div class="product-card reveal reveal-delay-2">
+      <img src="https://raw.githubusercontent.com/pekarnisiana/site/main/images/5.jpg" alt="Руло баници" loading="lazy">
+      <div class="overlay"><span>Руло баници</span></div>
+    </div>
+    <div class="product-card reveal reveal-delay-3">
+      <img src="https://raw.githubusercontent.com/pekarnisiana/site/main/images/6.jpg" alt="Калцоне" loading="lazy">
+      <div class="overlay"><span>Калцоне</span></div>
+    </div>
+  </div>
+</section>
+
+<!-- Pricing -->
+<section id="pricing">
+  <p class="section-label">Ценоразпис</p>
+  <h2 class="section-title">Питки — Цени</h2>
+  <div class="section-divider"></div>
+  <div class="pricing-grid">
+
+    <!-- Сладки питки -->
+    <div class="pricing-card reveal">
+      <div class="pricing-card-icon">🍞</div>
+      <h3>Сладки питки</h3>
+      <div class="pricing-rows">
+        <div class="pricing-row">
+          <span class="pricing-row-label">Малка сладка питка</span>
+          <span class="pricing-row-price">10 евро</span>
+        </div>
+        <div class="pricing-row">
+          <span class="pricing-row-label">Голяма сладка питка</span>
+          <span class="pricing-row-price">13 евро</span>
+        </div>
+      </div>
+    </div>
+
+    <!-- Солени питки -->
+    <div class="pricing-card reveal reveal-delay-1">
+      <div class="pricing-card-icon">🧂</div>
+      <h3>Солени питки</h3>
+      <div class="pricing-rows">
+        <div class="pricing-row">
+          <span class="pricing-row-label">Малка солена питка</span>
+          <span class="pricing-row-price">10 евро</span>
+        </div>
+        <div class="pricing-row">
+          <span class="pricing-row-label">Голяма солена питка</span>
+          <span class="pricing-row-price">13 евро</span>
+        </div>
+      </div>
+    </div>
+
+    <!-- Солени питки със сирене -->
+    <div class="pricing-card reveal reveal-delay-2">
+      <div class="pricing-card-icon">🧀</div>
+      <h3>Солени питки със сирене</h3>
+      <div class="pricing-rows">
+        <div class="pricing-row">
+          <span class="pricing-row-label">Малка</span>
+          <span class="pricing-row-price">13 евро</span>
+        </div>
+        <div class="pricing-row">
+          <span class="pricing-row-label">Голяма</span>
+          <span class="pricing-row-price">15 евро</span>
+        </div>
+      </div>
+    </div>
+
+  </div>
+</section>
+
+<!-- Locations -->
+<section id="locations">
+  <p class="section-label">Обекти</p>
+  <h2 class="section-title">Заповядайте при нас</h2>
+  <div class="section-divider"></div>
+  <div class="locations-grid">
+    <div class="location-card reveal">
+      <img src="https://raw.githubusercontent.com/pekarnisiana/site/main/images/ob1.jpg" alt="Обект 1" loading="lazy">
+      <div class="location-info">
+        <h3>Кичука</h3>
+        <p>Топли закуски, изпечени на място. Заповядайте при нас!</p>
+        <div class="hours">🕐 Работно време: 06:00 — 15:00</div>
+      </div>
+    </div>
+    <div class="location-card reveal reveal-delay-1">
+      <img src="https://raw.githubusercontent.com/pekarnisiana/site/main/images/ob2.jpg" alt="Обект 2" loading="lazy">
+      <div class="location-info">
+        <h3>Аджисана</h3>
+        <p>Семейна пекарна с разнообразие от баници и хлябове.</p>
+        <div class="hours">🕐 Работно време: 06:00 — 15:00</div>
+      </div>
+    </div>
+    <div class="location-card reveal reveal-delay-2">
+      <img src="https://raw.githubusercontent.com/pekarnisiana/site/main/images/ob3.jpg" alt="Обект 3" loading="lazy">
+      <div class="location-info">
+        <h3>Тракия</h3>
+        <p>Нашият нов уютен обект. Очакваме ви с нетърпение!</p>
+        <div class="hours">🕐 Работно време: 06:00 — 15:00</div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- Values -->
+<section id="values">
+  <p class="section-label">Нашите ценности</p>
+  <h2 class="section-title">Защо да изберете нас</h2>
+  <div class="section-divider"></div>
+  <div class="values-grid">
+    <div class="value-item reveal">
+      <div class="value-icon">🔒</div>
+      <h3>Качество без компромис</h3>
+      <p>Работим с най-висок клас съставки и материали, за да предложим най-доброто.</p>
+    </div>
+    <div class="value-item reveal reveal-delay-1">
+      <div class="value-icon">❤️</div>
+      <h3>Създадени с любов</h3>
+      <p>Ръчна изработка, внимание към детайла и истинска грижа към клиента.</p>
+    </div>
+    <div class="value-item reveal reveal-delay-2">
+      <div class="value-icon">🌾</div>
+      <h3>Семейна традиция</h3>
+      <p>Години опит и предаван от поколение на поколение занаят.</p>
+    </div>
+  </div>
+</section>
+
+<!-- Partners -->
+<section id="partners">
+  <p class="section-label">Партньори</p>
+  <h2 class="section-title">Нашите партньори</h2>
+  <div class="section-divider"></div>
+  <div class="partners-container">
+    <div class="partners-grid">
+      <div class="partner-card reveal">
+        <a href="https://visk.bg" target="_blank" rel="noopener" class="partner-logo-link">
+          <div class="partner-logo-wrap">
+            <img src="https://raw.githubusercontent.com/pekarnisiana/site/main/images/part1.jpg" alt="На ръка">
+          </div>
+        </a>
+      </div>
+      <div class="partner-card reveal reveal-delay-2">
+        <div class="partner-logo-wrap">
+          <img src="https://raw.githubusercontent.com/pekarnisiana/site/main/images/part2.jpg" alt="Пекарни Сиана">
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- Contact -->
+<section id="contact">
+  <p class="section-label">Контакти</p>
+  <h2 class="section-title">Свържете се с нас</h2>
+  <div class="section-divider"></div>
+  <div class="contact-content reveal">
+    <p>Приемаме поръчки за събития и специални поводи. Свържете се с нас за повече информация.</p>
+    <a href="tel:0895511675" class="contact-phone">📞 0895511675</a>
+    <div class="contact-details">
+      <div class="contact-detail">
+        <h4>Работно време</h4>
+        <p>Понеделник — Неделя</p>
+        <p>06:00 — 15:00</p>
+      </div>
+      <div class="contact-detail">
+        <h4>Поръчки</h4>
+        <p>Питка с късмети</p>
+        <p>Тиквеник с късмети</p>
+        <p>Вита баница с късмети</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- Footer -->
+<footer>
+  <img src="https://raw.githubusercontent.com/pekarnisiana/site/main/images/logoblank.png" alt="Пекарни Сиана" class="footer-logo">
+  <p>Семейни пекарни Сиана</p>
+  <p>Топли закуски, изпечени на място</p>
+  <p class="copyright">© 2025 Пекарни Сиана. Всички права запазени.</p>
+</footer>
+
+<script>
+(function() {
+  'use strict';
+
+  const nav    = document.getElementById('navbar');
+  const navLinks = document.getElementById('navLinks');
+  const hamburger = document.getElementById('hamburger');
+
+  // ── Scroll: add/remove .scrolled class ──────────────────────────────────────
+  function onScroll() {
+    nav.classList.toggle('scrolled', window.scrollY > 50);
+  }
+  window.addEventListener('scroll', onScroll, { passive: true });
+
+  // ── Mobile menu toggle ───────────────────────────────────────────────────────
+  function openMenu() {
+    navLinks.classList.add('open');
+    hamburger.classList.add('active');
+    // Prevent body scroll while menu is open (fixes iOS rubber-band bug)
+    document.body.style.overflow = 'hidden';
+  }
+
+  function closeMenu() {
+    navLinks.classList.remove('open');
+    hamburger.classList.remove('active');
+    document.body.style.overflow = '';
+  }
+
+  function toggleMenu() {
+    navLinks.classList.contains('open') ? closeMenu() : openMenu();
+  }
+
+  hamburger.addEventListener('click', function(e) {
+    e.stopPropagation();
+    toggleMenu();
+  });
+
+  // Close when clicking outside the menu
+  document.addEventListener('click', function(e) {
+    if (navLinks.classList.contains('open') &&
+        !navLinks.contains(e.target) &&
+        !hamburger.contains(e.target)) {
+      closeMenu();
+    }
+  });
+
+  // Close on ESC key
+  document.addEventListener('keydown', function(e) {
+    if (e.key === 'Escape') closeMenu();
+  });
+
+  // ── Smooth scroll + close menu on nav-link click ─────────────────────────────
+  document.querySelectorAll('a[href^="#"]').forEach(function(a) {
+    a.addEventListener('click', function(e) {
+      const target = document.querySelector(a.getAttribute('href'));
+      if (target) {
+        e.preventDefault();
+        closeMenu();
+        // Small delay so the menu animation plays before scroll
+        setTimeout(function() {
+          target.scrollIntoView({ behavior: 'smooth' });
+        }, 10);
+      }
+    });
+  });
+
+  // ── Reveal-on-scroll (IntersectionObserver) ──────────────────────────────────
+  const observer = new IntersectionObserver(function(entries) {
+    entries.forEach(function(entry) {
+      if (entry.isIntersecting) {
+        entry.target.classList.add('visible');
+      }
+    });
+  }, { threshold: 0.1, rootMargin: '0px 0px -50px 0px' });
+
+  document.querySelectorAll('.reveal').forEach(function(el) {
+    observer.observe(el);
+  });
+
+})();
+</script>
+
+</body>
+</html>

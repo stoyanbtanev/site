@@ -1,0 +1,1130 @@
+<!DOCTYPE html>
+<html lang="bg">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Пекарни Сиана — Семейни пекарни</title>
+<link rel="icon" type="image/png" href="https://raw.githubusercontent.com/pekarnisiana/site/main/images/logo.png">
+<meta property="og:image" content="https://raw.githubusercontent.com/pekarnisiana/site/main/images/logo.png">
+<meta property="og:title" content="Пекарни Сиана — Семейни пекарни">
+<meta property="og:description" content="Семейни пекарни Сиана — Топли закуски, изпечени на място.">
+<meta property="og:type" content="website">
+
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,600;0,700;1,400&family=Lato:wght@300;400;700&display=swap" rel="stylesheet">
+
+<style>
+/* ============================================================
+   RESET & TOKENS
+   ============================================================ */
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+:root {
+  --gold:        #C8961E;
+  --gold-light:  #E8B84B;
+  --gold-pale:   #F5E6C8;
+  --gold-dark:   #8B6714;
+  --brown:       #2E1F12;
+  --brown-mid:   #4A3020;
+  --brown-soft:  #6B4C34;
+  --cream:       #FDF8F0;
+  --off-white:   #FFFCF5;
+  --text:        #2C1810;
+  --text-soft:   #6B5B4E;
+  --border:      rgba(200,150,30,0.2);
+  --pad-x:       clamp(1.25rem, 5vw, 3rem);
+  --section-py:  clamp(4rem, 8vw, 7rem);
+}
+
+html {
+  scroll-behavior: smooth;
+  background: var(--cream);
+}
+
+body {
+  font-family: 'Lato', sans-serif;
+  color: var(--text);
+  background: var(--off-white);
+  -webkit-font-smoothing: antialiased;
+  overflow-x: hidden;
+}
+
+img { display: block; max-width: 100%; }
+
+/* ============================================================
+   NAVIGATION
+   ============================================================ */
+.nav {
+  position: fixed;
+  inset: 0 0 auto 0;
+  z-index: 900;
+  transition: background 0.35s, box-shadow 0.35s, padding 0.35s;
+  padding: 1.4rem var(--pad-x);
+}
+
+.nav.solid {
+  background: rgba(253,248,240,0.97);
+  backdrop-filter: blur(16px);
+  -webkit-backdrop-filter: blur(16px);
+  box-shadow: 0 1px 0 var(--border), 0 4px 24px rgba(0,0,0,0.06);
+  padding: 0.8rem var(--pad-x);
+}
+
+.nav-inner {
+  max-width: 1100px;
+  margin: 0 auto;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  position: relative;
+}
+
+.nav-links {
+  display: flex;
+  list-style: none;
+  gap: clamp(1.5rem, 3vw, 3rem);
+  align-items: center;
+}
+
+.nav-links a {
+  font-size: 0.78rem;
+  font-weight: 700;
+  letter-spacing: 2px;
+  text-transform: uppercase;
+  color: var(--brown);
+  text-decoration: none;
+  position: relative;
+  transition: color 0.25s;
+  white-space: nowrap;
+}
+
+.nav-links a::after {
+  content: '';
+  position: absolute;
+  bottom: -3px; left: 0;
+  width: 0; height: 1.5px;
+  background: var(--gold);
+  transition: width 0.3s ease;
+}
+
+.nav-links a:hover { color: var(--gold); }
+.nav-links a:hover::after { width: 100%; }
+
+.nav-dot {
+  width: 3px; height: 3px;
+  border-radius: 50%;
+  background: var(--gold);
+  opacity: 0.4;
+  flex-shrink: 0;
+}
+
+.hamburger {
+  display: none;
+  position: absolute;
+  right: 0;
+  flex-direction: column;
+  gap: 5px;
+  cursor: pointer;
+  padding: 8px;
+  -webkit-tap-highlight-color: transparent;
+  touch-action: manipulation;
+  background: none;
+  border: none;
+}
+
+.hamburger span {
+  display: block;
+  width: 24px; height: 2px;
+  background: var(--brown);
+  border-radius: 2px;
+  transition: transform 0.3s, opacity 0.3s, background 0.3s;
+}
+
+.hamburger.open span:nth-child(1) { transform: rotate(45deg) translate(5px, 5px); }
+.hamburger.open span:nth-child(2) { opacity: 0; }
+.hamburger.open span:nth-child(3) { transform: rotate(-45deg) translate(5px, -5px); }
+
+/* Full-screen mobile drawer */
+.nav-drawer {
+  display: none;
+  position: fixed;
+  inset: 0;
+  z-index: 800;
+  background: rgba(253,248,240,0.98);
+  backdrop-filter: blur(20px);
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 2.5rem;
+  opacity: 0;
+  pointer-events: none;
+  transition: opacity 0.35s ease;
+}
+
+.nav-drawer.open {
+  opacity: 1;
+  pointer-events: all;
+}
+
+.nav-drawer a {
+  font-family: 'Playfair Display', serif;
+  font-size: 2rem;
+  color: var(--brown);
+  text-decoration: none;
+  letter-spacing: 1px;
+  transition: color 0.25s;
+}
+
+.nav-drawer a:hover { color: var(--gold); }
+
+/* ============================================================
+   HERO
+   The image is a plain block-level <img>: width 100%, height auto.
+   No position:absolute, no object-fit, no viewport units on the image.
+   It renders at its exact pixel ratio — the browser has nothing
+   to recalculate during scroll, so zoom is physically impossible.
+   max-height on .hero clips the container on very tall screens.
+   ============================================================ */
+.hero {
+  position: relative;
+  width: 100%;
+  overflow: hidden;
+  background: var(--brown);
+  /* Never taller than the viewport */
+  max-height: 100vh;
+  border-bottom: 3px solid var(--gold);
+}
+
+.hero-img {
+  width: 100%;
+  height: auto;
+  display: block;
+  vertical-align: top;
+  /* No transform, no will-change, no GPU tricks — just a normal image */
+}
+
+/* Bottom fade into first section */
+.hero::after {
+  content: '';
+  position: absolute;
+  bottom: 0; left: 0; right: 0;
+  height: 28%;
+  background: linear-gradient(to bottom, transparent, rgba(46,31,18,0.3));
+  pointer-events: none;
+}
+
+/* Animated scroll chevron */
+.hero-chevron {
+  position: absolute;
+  bottom: 1.5rem;
+  left: 50%;
+  transform: translateX(-50%);
+  z-index: 2;
+  animation: chevBounce 2.2s ease-in-out infinite;
+}
+
+.hero-chevron svg {
+  width: 30px; height: 30px;
+  stroke: rgba(255,255,255,0.8);
+  fill: none;
+  stroke-width: 2;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+  filter: drop-shadow(0 1px 4px rgba(0,0,0,0.3));
+}
+
+@keyframes chevBounce {
+  0%, 100% { transform: translateX(-50%) translateY(0);   opacity: 0.7; }
+  50%       { transform: translateX(-50%) translateY(8px); opacity: 1;   }
+}
+
+/* ============================================================
+   SHARED SECTION STYLES
+   ============================================================ */
+.section { padding: var(--section-py) var(--pad-x); }
+
+.section-inner {
+  max-width: 1100px;
+  margin: 0 auto;
+}
+
+.eyebrow {
+  display: block;
+  font-size: 0.7rem;
+  font-weight: 700;
+  letter-spacing: 4px;
+  text-transform: uppercase;
+  color: var(--gold);
+  text-align: center;
+  margin-bottom: 0.75rem;
+}
+
+.heading {
+  font-family: 'Playfair Display', serif;
+  font-size: clamp(1.9rem, 4vw, 3rem);
+  font-weight: 700;
+  color: var(--brown);
+  text-align: center;
+  line-height: 1.2;
+  margin-bottom: 0.9rem;
+}
+
+.rule {
+  width: 48px; height: 2px;
+  background: linear-gradient(90deg, var(--gold), var(--gold-light));
+  margin: 0 auto 3rem;
+  border-radius: 2px;
+}
+
+/* ============================================================
+   ABOUT
+   ============================================================ */
+.about-section { background: var(--cream); }
+
+.about-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: clamp(2rem, 5vw, 4.5rem);
+  align-items: center;
+}
+
+.about-img-wrap {
+  position: relative;
+  border-radius: 16px;
+  overflow: hidden;
+  box-shadow: 0 20px 60px rgba(0,0,0,0.1);
+}
+
+.about-img-wrap::before {
+  content: '';
+  position: absolute;
+  top: -1px; left: -1px;
+  width: 64px; height: 64px;
+  border-top: 3px solid var(--gold);
+  border-left: 3px solid var(--gold);
+  border-radius: 16px 0 0 0;
+  z-index: 2;
+  pointer-events: none;
+}
+
+.about-img-wrap img {
+  width: 100%;
+  height: 400px;
+  object-fit: cover;
+  transition: transform 0.7s ease;
+}
+
+.about-img-wrap:hover img { transform: scale(1.04); }
+
+.about-text .heading,
+.about-text .eyebrow { text-align: left; }
+.about-text .rule    { margin-left: 0; }
+
+.about-text p {
+  font-size: 1rem;
+  line-height: 1.85;
+  color: var(--text-soft);
+  margin-bottom: 1.1rem;
+}
+
+.about-pills {
+  display: flex;
+  gap: 1rem;
+  margin-top: 2rem;
+  flex-wrap: wrap;
+}
+
+.pill {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5rem;
+  padding: 0.5rem 1.1rem;
+  background: var(--gold-pale);
+  border-radius: 100px;
+  font-size: 0.82rem;
+  font-weight: 700;
+  color: var(--gold-dark);
+}
+
+/* ============================================================
+   PRODUCTS
+   ============================================================ */
+.products-section { background: var(--off-white); }
+
+.products-grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  grid-template-rows: auto auto;
+  gap: 1rem;
+}
+
+.p-card {
+  position: relative;
+  border-radius: 12px;
+  overflow: hidden;
+  cursor: pointer;
+  aspect-ratio: 1 / 1;
+  background: var(--brown);
+}
+
+.p-card.featured {
+  grid-column: span 2;
+  grid-row: span 2;
+  aspect-ratio: auto;
+}
+
+.p-card img {
+  width: 100%; height: 100%;
+  object-fit: cover;
+  transition: transform 0.6s ease;
+}
+
+.p-card:hover img { transform: scale(1.08); }
+
+.p-card-label {
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(to top,
+    rgba(46,31,18,0.82) 0%,
+    rgba(46,31,18,0.1) 45%,
+    transparent 65%);
+  display: flex;
+  align-items: flex-end;
+  padding: 1.2rem;
+  opacity: 0;
+  transition: opacity 0.35s;
+}
+
+.p-card:hover .p-card-label { opacity: 1; }
+
+.p-card-label span {
+  font-family: 'Playfair Display', serif;
+  font-size: 1.1rem;
+  color: white;
+  transform: translateY(6px);
+  transition: transform 0.35s;
+}
+
+.p-card:hover .p-card-label span { transform: translateY(0); }
+
+/* ============================================================
+   PRICING
+   ============================================================ */
+.pricing-section {
+  background: var(--brown);
+  position: relative;
+  overflow: hidden;
+}
+
+.pricing-section::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background:
+    radial-gradient(ellipse at 15% 85%, rgba(200,150,30,0.12) 0%, transparent 55%),
+    radial-gradient(ellipse at 85% 15%, rgba(200,150,30,0.08) 0%, transparent 55%);
+  pointer-events: none;
+}
+
+.pricing-section .eyebrow { color: var(--gold-light); }
+.pricing-section .heading { color: white; }
+.pricing-section .rule { background: linear-gradient(90deg, var(--gold-light), var(--gold)); }
+
+.pricing-grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 1.5rem;
+  position: relative;
+  z-index: 1;
+}
+
+.price-card {
+  background: rgba(255,255,255,0.05);
+  border: 1px solid rgba(200,150,30,0.2);
+  border-radius: 16px;
+  padding: 2rem 1.6rem;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 1rem;
+  transition: background 0.3s, border-color 0.3s, transform 0.3s;
+}
+
+.price-card:hover {
+  background: rgba(255,255,255,0.09);
+  border-color: rgba(200,150,30,0.45);
+  transform: translateY(-4px);
+}
+
+.price-icon {
+  width: 56px; height: 56px;
+  background: linear-gradient(135deg, var(--gold-light), var(--gold));
+  border-radius: 50%;
+  display: flex; align-items: center; justify-content: center;
+  font-size: 1.6rem;
+  box-shadow: 0 4px 16px rgba(200,150,30,0.35);
+}
+
+.price-card h3 {
+  font-family: 'Playfair Display', serif;
+  font-size: 1.15rem;
+  color: var(--gold-pale);
+  text-align: center;
+  line-height: 1.3;
+}
+
+.price-rows { width: 100%; display: flex; flex-direction: column; gap: 0.55rem; }
+
+.price-row {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 0.55rem 0.9rem;
+  background: rgba(255,255,255,0.04);
+  border-radius: 8px;
+  gap: 0.5rem;
+}
+
+.price-row-label { font-size: 0.84rem; color: rgba(255,255,255,0.6); }
+.price-row-val {
+  font-family: 'Playfair Display', serif;
+  font-size: 1rem;
+  font-weight: 600;
+  color: var(--gold-light);
+  white-space: nowrap;
+}
+
+/* ============================================================
+   LOCATIONS
+   ============================================================ */
+.locations-section { background: var(--cream); }
+
+.locations-grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 1.5rem;
+}
+
+.loc-card {
+  border-radius: 16px;
+  overflow: hidden;
+  background: white;
+  box-shadow: 0 6px 30px rgba(0,0,0,0.06);
+  transition: transform 0.4s, box-shadow 0.4s;
+  display: flex;
+  flex-direction: column;
+}
+
+.loc-card:hover {
+  transform: translateY(-6px);
+  box-shadow: 0 18px 50px rgba(0,0,0,0.11);
+}
+
+.loc-card img { width: 100%; height: 200px; object-fit: cover; }
+
+.loc-info {
+  padding: 1.5rem;
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+}
+
+.loc-info h3 {
+  font-family: 'Playfair Display', serif;
+  font-size: 1.3rem;
+  color: var(--brown);
+  margin-bottom: 0.5rem;
+}
+
+.loc-info p {
+  font-size: 0.9rem;
+  color: var(--text-soft);
+  line-height: 1.65;
+  margin-bottom: 1rem;
+  flex: 1;
+}
+
+.loc-hours {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.4rem;
+  padding: 0.45rem 1rem;
+  background: var(--gold-pale);
+  border-radius: 100px;
+  font-size: 0.8rem;
+  font-weight: 700;
+  color: var(--gold-dark);
+  align-self: flex-start;
+}
+
+/* ============================================================
+   VALUES
+   ============================================================ */
+.values-section {
+  background: var(--brown-mid);
+  position: relative;
+  overflow: hidden;
+}
+
+.values-section::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background: radial-gradient(ellipse at 50% 100%, rgba(200,150,30,0.08) 0%, transparent 60%);
+  pointer-events: none;
+}
+
+.values-section .eyebrow { color: var(--gold-light); }
+.values-section .heading { color: white; }
+.values-section .rule { background: linear-gradient(90deg, var(--gold-light), var(--gold)); }
+
+.values-grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 2rem;
+  position: relative;
+  z-index: 1;
+}
+
+.val-item {
+  text-align: center;
+  padding: 2rem 1.5rem;
+  border-radius: 14px;
+  transition: background 0.3s;
+}
+
+.val-item:hover { background: rgba(255,255,255,0.04); }
+
+.val-icon {
+  width: 64px; height: 64px;
+  border: 1.5px solid rgba(200,150,30,0.4);
+  border-radius: 50%;
+  display: flex; align-items: center; justify-content: center;
+  margin: 0 auto 1.25rem;
+  font-size: 1.6rem;
+  transition: all 0.35s;
+}
+
+.val-item:hover .val-icon {
+  background: var(--gold);
+  border-color: var(--gold);
+}
+
+.val-item h3 {
+  font-family: 'Playfair Display', serif;
+  font-size: 1.2rem;
+  color: var(--gold-pale);
+  margin-bottom: 0.6rem;
+}
+
+.val-item p {
+  font-size: 0.88rem;
+  line-height: 1.7;
+  color: rgba(255,255,255,0.55);
+}
+
+/* ============================================================
+   PARTNERS
+   ============================================================ */
+.partners-section { background: var(--off-white); }
+
+.partners-flex {
+  display: flex;
+  justify-content: center;
+  gap: 2rem;
+  flex-wrap: wrap;
+}
+
+.partner-card {
+  width: 240px;
+  background: white;
+  border-radius: 16px;
+  padding: 1.8rem;
+  display: flex; align-items: center; justify-content: center;
+  box-shadow: 0 4px 24px rgba(0,0,0,0.05);
+  border: 1px solid var(--border);
+  transition: transform 0.35s, box-shadow 0.35s, border-color 0.35s;
+}
+
+.partner-card:hover {
+  transform: translateY(-4px);
+  box-shadow: 0 14px 40px rgba(0,0,0,0.09);
+  border-color: rgba(200,150,30,0.35);
+}
+
+.partner-card img { max-width: 130px; max-height: 110px; object-fit: contain; }
+
+/* ============================================================
+   CONTACT
+   ============================================================ */
+.contact-section { background: var(--cream); }
+
+.contact-box {
+  max-width: 680px;
+  margin: 0 auto;
+  text-align: center;
+}
+
+.contact-box > p {
+  font-size: 1rem;
+  color: var(--text-soft);
+  line-height: 1.8;
+  margin-bottom: 2rem;
+}
+
+.contact-phone {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.6rem;
+  font-family: 'Playfair Display', serif;
+  font-size: clamp(1.8rem, 5vw, 2.6rem);
+  color: var(--gold-dark);
+  font-weight: 700;
+  text-decoration: none;
+  transition: color 0.25s;
+  margin-bottom: 2.5rem;
+}
+
+.contact-phone:hover { color: var(--gold); }
+
+.contact-meta {
+  display: flex;
+  justify-content: center;
+  gap: clamp(2rem, 6vw, 5rem);
+  flex-wrap: wrap;
+  padding-top: 2rem;
+  border-top: 1px solid var(--border);
+}
+
+.contact-meta-item h4 {
+  font-family: 'Playfair Display', serif;
+  font-size: 1rem;
+  color: var(--brown);
+  margin-bottom: 0.5rem;
+}
+
+.contact-meta-item p {
+  font-size: 0.88rem;
+  color: var(--text-soft);
+  line-height: 1.65;
+}
+
+/* ============================================================
+   FOOTER
+   ============================================================ */
+.footer {
+  background: var(--brown);
+  padding: 3rem var(--pad-x);
+  text-align: center;
+  border-top: 1px solid rgba(200,150,30,0.2);
+}
+
+.footer-logo {
+  height: 58px;
+  width: auto;
+  margin: 0 auto 1rem;
+  opacity: 0.88;
+  object-fit: contain;
+}
+
+.footer p {
+  font-size: 0.85rem;
+  color: rgba(255,255,255,0.5);
+  margin-bottom: 0.25rem;
+}
+
+.footer .copy {
+  margin-top: 1.5rem;
+  font-size: 0.72rem;
+  opacity: 0.3;
+}
+
+/* ============================================================
+   REVEAL ANIMATIONS
+   ============================================================ */
+.reveal {
+  opacity: 0;
+  transform: translateY(28px);
+  transition: opacity 0.75s ease, transform 0.75s ease;
+}
+
+.reveal.in { opacity: 1; transform: none; }
+.d1 { transition-delay: 0.1s; }
+.d2 { transition-delay: 0.2s; }
+.d3 { transition-delay: 0.3s; }
+
+/* ============================================================
+   RESPONSIVE — Tablet
+   ============================================================ */
+@media (max-width: 860px) {
+  .nav-links, .nav-dot { display: none; }
+  .hamburger { display: flex; }
+  .nav-drawer { display: flex; }
+
+  .about-grid { grid-template-columns: 1fr; }
+  .about-text .heading,
+  .about-text .eyebrow { text-align: center; }
+  .about-text .rule { margin: 0 auto 3rem; }
+  .about-pills { justify-content: center; }
+  .about-img-wrap img { height: 300px; }
+
+  .products-grid { grid-template-columns: 1fr 1fr; }
+  .p-card.featured { grid-column: span 2; grid-row: span 1; aspect-ratio: 16/9; }
+
+  .pricing-grid { grid-template-columns: 1fr; max-width: 380px; margin: 0 auto; }
+
+  .locations-grid { grid-template-columns: 1fr; max-width: 460px; margin: 0 auto; }
+
+  .values-grid { grid-template-columns: 1fr; max-width: 360px; margin: 0 auto; }
+}
+
+/* ============================================================
+   RESPONSIVE — Mobile
+   ============================================================ */
+@media (max-width: 520px) {
+  .products-grid { grid-template-columns: 1fr; }
+  .p-card.featured { grid-column: span 1; aspect-ratio: 4/3; }
+  .p-card { aspect-ratio: 4/3; }
+
+  .about-img-wrap img { height: 240px; }
+  .about-pills { flex-direction: column; align-items: center; }
+
+  .partners-flex { flex-direction: column; align-items: center; }
+  .partner-card { width: 100%; }
+
+  .contact-meta { gap: 1.5rem; }
+}
+
+/* Safe area for iPhone home bar */
+@supports (padding-bottom: env(safe-area-inset-bottom)) {
+  .footer { padding-bottom: calc(3rem + env(safe-area-inset-bottom)); }
+}
+</style>
+</head>
+<body>
+
+<!-- ══════════════ NAVIGATION ══════════════ -->
+<nav class="nav" id="nav">
+  <div class="nav-inner">
+    <ul class="nav-links">
+      <li><a href="#about">За нас</a></li>
+      <li><span class="nav-dot"></span></li>
+      <li><a href="#products">Продукти</a></li>
+      <li><span class="nav-dot"></span></li>
+      <li><a href="#locations">Обекти</a></li>
+      <li><span class="nav-dot"></span></li>
+      <li><a href="#partners">Партньори</a></li>
+      <li><span class="nav-dot"></span></li>
+      <li><a href="#contact">Контакти</a></li>
+    </ul>
+    <button class="hamburger" id="hamburger" aria-label="Меню">
+      <span></span><span></span><span></span>
+    </button>
+  </div>
+</nav>
+
+<!-- Full-screen mobile drawer -->
+<div class="nav-drawer" id="drawer">
+  <a href="#about"     class="dl">За нас</a>
+  <a href="#products"  class="dl">Продукти</a>
+  <a href="#locations" class="dl">Обекти</a>
+  <a href="#partners"  class="dl">Партньори</a>
+  <a href="#contact"   class="dl">Контакти</a>
+</div>
+
+<!-- ══════════════ HERO ══════════════ -->
+<header class="hero">
+  <!--
+    Plain <img> with width:100% height:auto.
+    No position:absolute, no object-fit stretching, no viewport height units.
+    Renders at its natural pixel ratio — the browser has zero reason
+    to repaint or rescale during scroll. Mobile zoom: gone forever.
+  -->
+  <img
+    class="hero-img"
+    src="https://raw.githubusercontent.com/pekarnisiana/site/main/images/16.png"
+    alt="Пекарни Сиана"
+    fetchpriority="high"
+    draggable="false"
+  >
+  <div class="hero-chevron">
+    <svg viewBox="0 0 24 24"><polyline points="6 9 12 15 18 9"/></svg>
+  </div>
+</header>
+
+<!-- ══════════════ ABOUT ══════════════ -->
+<section class="section about-section" id="about">
+  <div class="section-inner">
+    <div class="about-grid">
+      <div class="about-img-wrap reveal">
+        <img src="https://raw.githubusercontent.com/pekarnisiana/site/main/images/8.jpg" alt="Пекарна Сиана" loading="lazy">
+      </div>
+      <div class="about-text reveal d2">
+        <span class="eyebrow">За нас</span>
+        <h2 class="heading">Пресни изкушения,<br>изпечени с любов</h2>
+        <div class="rule"></div>
+        <p>Нашата мисия е да създаваме удоволствие всеки ден, като предлагаме пресни, вкусни и топли продукти, приготвени с много грижа, любов и най-добрите съставки.</p>
+        <div class="about-pills">
+          <div class="pill">🌾 Качество</div>
+          <div class="pill">❤️ Любов</div>
+          <div class="pill">⏰ Всеки ден</div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ══════════════ PRODUCTS ══════════════ -->
+<section class="section products-section" id="products">
+  <div class="section-inner">
+    <span class="eyebrow">Нашите продукти</span>
+    <h2 class="heading">Топли закуски, изпечени на място</h2>
+    <div class="rule"></div>
+    <div class="products-grid">
+      <div class="p-card featured reveal">
+        <img src="https://raw.githubusercontent.com/pekarnisiana/site/main/images/1.jpg" alt="Питки със сусам" loading="lazy">
+        <div class="p-card-label"><span>Питки със сусам</span></div>
+      </div>
+      <div class="p-card reveal d1">
+        <img src="https://raw.githubusercontent.com/pekarnisiana/site/main/images/2.jpg" alt="Бутер баници" loading="lazy">
+        <div class="p-card-label"><span>Бутер баници</span></div>
+      </div>
+      <div class="p-card reveal d2">
+        <img src="https://raw.githubusercontent.com/pekarnisiana/site/main/images/3.jpg" alt="Триъгълни баници" loading="lazy">
+        <div class="p-card-label"><span>Триъгълни баници</span></div>
+      </div>
+      <div class="p-card reveal d1">
+        <img src="https://raw.githubusercontent.com/pekarnisiana/site/main/images/4.jpg" alt="Мит с кренвирш" loading="lazy">
+        <div class="p-card-label"><span>Мит с кренвирш</span></div>
+      </div>
+      <div class="p-card reveal d2">
+        <img src="https://raw.githubusercontent.com/pekarnisiana/site/main/images/5.jpg" alt="Руло баници" loading="lazy">
+        <div class="p-card-label"><span>Руло баници</span></div>
+      </div>
+      <div class="p-card reveal d3">
+        <img src="https://raw.githubusercontent.com/pekarnisiana/site/main/images/6.jpg" alt="Калцоне" loading="lazy">
+        <div class="p-card-label"><span>Калцоне</span></div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ══════════════ PRICING ══════════════ -->
+<section class="section pricing-section" id="pricing">
+  <div class="section-inner">
+    <span class="eyebrow">Ценоразпис</span>
+    <h2 class="heading">Питки — Цени</h2>
+    <div class="rule"></div>
+    <div class="pricing-grid">
+      <div class="price-card reveal">
+        <div class="price-icon">🍞</div>
+        <h3>Сладки питки</h3>
+        <div class="price-rows">
+          <div class="price-row"><span class="price-row-label">Малка сладка питка</span><span class="price-row-val">10 евро</span></div>
+          <div class="price-row"><span class="price-row-label">Голяма сладка питка</span><span class="price-row-val">13 евро</span></div>
+        </div>
+      </div>
+      <div class="price-card reveal d1">
+        <div class="price-icon">🧂</div>
+        <h3>Солени питки</h3>
+        <div class="price-rows">
+          <div class="price-row"><span class="price-row-label">Малка солена питка</span><span class="price-row-val">10 евро</span></div>
+          <div class="price-row"><span class="price-row-label">Голяма солена питка</span><span class="price-row-val">13 евро</span></div>
+        </div>
+      </div>
+      <div class="price-card reveal d2">
+        <div class="price-icon">🧀</div>
+        <h3>Солени питки със сирене</h3>
+        <div class="price-rows">
+          <div class="price-row"><span class="price-row-label">Малка</span><span class="price-row-val">13 евро</span></div>
+          <div class="price-row"><span class="price-row-label">Голяма</span><span class="price-row-val">15 евро</span></div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ══════════════ LOCATIONS ══════════════ -->
+<section class="section locations-section" id="locations">
+  <div class="section-inner">
+    <span class="eyebrow">Обекти</span>
+    <h2 class="heading">Заповядайте при нас</h2>
+    <div class="rule"></div>
+    <div class="locations-grid">
+      <div class="loc-card reveal">
+        <img src="https://raw.githubusercontent.com/pekarnisiana/site/main/images/ob1.jpg" alt="Кичука" loading="lazy">
+        <div class="loc-info">
+          <h3>Кичука</h3>
+          <p>Топли закуски, изпечени на място. Заповядайте при нас!</p>
+          <div class="loc-hours">🕐 06:00 — 15:00</div>
+        </div>
+      </div>
+      <div class="loc-card reveal d1">
+        <img src="https://raw.githubusercontent.com/pekarnisiana/site/main/images/ob2.jpg" alt="Аджисана" loading="lazy">
+        <div class="loc-info">
+          <h3>Аджисана</h3>
+          <p>Семейна пекарна с разнообразие от баници и хлябове.</p>
+          <div class="loc-hours">🕐 06:00 — 15:00</div>
+        </div>
+      </div>
+      <div class="loc-card reveal d2">
+        <img src="https://raw.githubusercontent.com/pekarnisiana/site/main/images/ob3.jpg" alt="Тракия" loading="lazy">
+        <div class="loc-info">
+          <h3>Тракия</h3>
+          <p>Нашият нов уютен обект. Очакваме ви с нетърпение!</p>
+          <div class="loc-hours">🕐 06:00 — 15:00</div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ══════════════ VALUES ══════════════ -->
+<section class="section values-section" id="values">
+  <div class="section-inner">
+    <span class="eyebrow">Нашите ценности</span>
+    <h2 class="heading">Защо да изберете нас</h2>
+    <div class="rule"></div>
+    <div class="values-grid">
+      <div class="val-item reveal">
+        <div class="val-icon">🔒</div>
+        <h3>Качество без компромис</h3>
+        <p>Работим с най-висок клас съставки и материали, за да предложим най-доброто.</p>
+      </div>
+      <div class="val-item reveal d1">
+        <div class="val-icon">❤️</div>
+        <h3>Създадени с любов</h3>
+        <p>Ръчна изработка, внимание към детайла и истинска грижа към клиента.</p>
+      </div>
+      <div class="val-item reveal d2">
+        <div class="val-icon">🌾</div>
+        <h3>Семейна традиция</h3>
+        <p>Години опит и предаван от поколение на поколение занаят.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ══════════════ PARTNERS ══════════════ -->
+<section class="section partners-section" id="partners">
+  <div class="section-inner">
+    <span class="eyebrow">Партньори</span>
+    <h2 class="heading">Нашите партньори</h2>
+    <div class="rule"></div>
+    <div class="partners-flex">
+      <div class="partner-card reveal">
+        <a href="https://visk.bg" target="_blank" rel="noopener">
+          <img src="https://raw.githubusercontent.com/pekarnisiana/site/main/images/part1.jpg" alt="На ръка">
+        </a>
+      </div>
+      <div class="partner-card reveal d2">
+        <img src="https://raw.githubusercontent.com/pekarnisiana/site/main/images/part2.jpg" alt="Партньор">
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ══════════════ CONTACT ══════════════ -->
+<section class="section contact-section" id="contact">
+  <div class="section-inner">
+    <span class="eyebrow">Контакти</span>
+    <h2 class="heading">Свържете се с нас</h2>
+    <div class="rule"></div>
+    <div class="contact-box reveal">
+      <p>Приемаме поръчки за събития и специални поводи. Свържете се с нас за повече информация.</p>
+      <a href="tel:0895511675" class="contact-phone">📞 0895511675</a>
+      <div class="contact-meta">
+        <div class="contact-meta-item">
+          <h4>Работно време</h4>
+          <p>Понеделник — Неделя</p>
+          <p>06:00 — 15:00</p>
+        </div>
+        <div class="contact-meta-item">
+          <h4>Поръчки</h4>
+          <p>Питка с късмети</p>
+          <p>Тиквеник с късмети</p>
+          <p>Вита баница с късмети</p>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ══════════════ FOOTER ══════════════ -->
+<footer class="footer">
+  <img class="footer-logo" src="https://raw.githubusercontent.com/pekarnisiana/site/main/images/logoblank.png" alt="Пекарни Сиана">
+  <p>Семейни пекарни Сиана</p>
+  <p>Топли закуски, изпечени на място</p>
+  <p class="copy">© 2025 Пекарни Сиана. Всички права запазени.</p>
+</footer>
+
+<script>
+(function () {
+  'use strict';
+
+  /* ── Nav: add .solid class on scroll ── */
+  var nav = document.getElementById('nav');
+  window.addEventListener('scroll', function () {
+    nav.classList.toggle('solid', window.scrollY > 40);
+  }, { passive: true });
+
+  /* ── Mobile hamburger / drawer ── */
+  var btn    = document.getElementById('hamburger');
+  var drawer = document.getElementById('drawer');
+
+  function openDrawer() {
+    drawer.classList.add('open');
+    btn.classList.add('open');
+    document.body.style.overflow = 'hidden';
+  }
+
+  function closeDrawer() {
+    drawer.classList.remove('open');
+    btn.classList.remove('open');
+    document.body.style.overflow = '';
+  }
+
+  btn.addEventListener('click', function (e) {
+    e.stopPropagation();
+    drawer.classList.contains('open') ? closeDrawer() : openDrawer();
+  });
+
+  drawer.querySelectorAll('.dl').forEach(function (a) {
+    a.addEventListener('click', function (e) {
+      e.preventDefault();
+      var target = document.querySelector(a.getAttribute('href'));
+      closeDrawer();
+      if (target) setTimeout(function () { target.scrollIntoView({ behavior: 'smooth' }); }, 40);
+    });
+  });
+
+  document.addEventListener('click', function (e) {
+    if (drawer.classList.contains('open') &&
+        !drawer.contains(e.target) && !btn.contains(e.target)) closeDrawer();
+  });
+
+  document.addEventListener('keydown', function (e) {
+    if (e.key === 'Escape') closeDrawer();
+  });
+
+  /* ── Desktop nav smooth scroll ── */
+  document.querySelectorAll('.nav-links a').forEach(function (a) {
+    a.addEventListener('click', function (e) {
+      var t = document.querySelector(a.getAttribute('href'));
+      if (t) { e.preventDefault(); t.scrollIntoView({ behavior: 'smooth' }); }
+    });
+  });
+
+  /* ── Reveal on scroll ── */
+  var io = new IntersectionObserver(function (entries) {
+    entries.forEach(function (en) {
+      if (en.isIntersecting) { en.target.classList.add('in'); io.unobserve(en.target); }
+    });
+  }, { threshold: 0.1, rootMargin: '0px 0px -40px 0px' });
+
+  document.querySelectorAll('.reveal').forEach(function (el) { io.observe(el); });
+
+}());
+</script>
+</body>
+</html>
